@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
@@ -20,7 +17,6 @@ import (
 )
 
 func renew(cert *certificate.Resource) error {
-
 	// Input certificate is PEM encoded. Decode it here as we may need the decoded
 	// cert later on in the renewal process. The input may be a bundle or a single certificate.
 	certificates, err := parsePEMBundle(cert.Certificate)
@@ -40,7 +36,6 @@ func renew(cert *certificate.Resource) error {
 
 	// Check against renewBefore
 	if int(timeLeft.Hours()) <= int(c.RenewBefore) {
-
 		log.Println("[INFO] simplecert: renewing cert...")
 
 		// allow graceful shutdown of running services if required
@@ -124,7 +119,6 @@ func renew(cert *certificate.Resource) error {
 // and renew if timeLeft is less than or equal to renewBefore
 // when initially started, the certificate is checked against the thresholds and renewed if neccessary
 func renewalRoutine(cr *certificate.Resource) {
-
 	for {
 		// sleep for duration of checkInterval
 		time.Sleep(c.CheckInterval)
@@ -132,7 +126,6 @@ func renewalRoutine(cr *certificate.Resource) {
 		// renew the certificate
 		err := renew(cr)
 		if err != nil { // something went wrong.
-
 			// call handler if set
 			if c.FailedToRenewCertificate != nil {
 				c.FailedToRenewCertificate(err)

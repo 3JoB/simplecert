@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
@@ -33,7 +30,6 @@ const localhost = "127.0.0.1"
 // ListenAndServeTLSCustom allows to specify the simplecert and TLS configuration
 // and does not redirect the traffic arriving at port 80
 func ListenAndServeTLSCustom(addr string, handler http.Handler, cfg *Config, tlsconf *tls.Config, cleanup func(), domains ...string) error {
-
 	certReloader, err := Init(cfg, cleanup)
 	if err != nil {
 		log.Fatal("[FATAL] simplecert init failed: ", err)
@@ -57,7 +53,6 @@ func ListenAndServeTLSCustom(addr string, handler http.Handler, cfg *Config, tls
 
 // ListenAndServeTLSLocal is a util to use simplecert for local development
 func ListenAndServeTLSLocal(addr string, handler http.Handler, cleanup func(), domains ...string) error {
-
 	cfg := Default
 	cfg.Domains = domains
 	cfg.CacheDir = "simplecert"
@@ -92,7 +87,6 @@ func ListenAndServeTLSLocal(addr string, handler http.Handler, cleanup func(), d
 
 // ListenAndServeTLS is a util to use simplecert in production
 func ListenAndServeTLS(addr string, handler http.Handler, mail string, cleanup func(), domains ...string) error {
-
 	cfg := Default
 	cfg.Domains = domains
 	cfg.CacheDir = "simplecert"
@@ -127,7 +121,6 @@ func ListenAndServeTLS(addr string, handler http.Handler, mail string, cleanup f
 
 // Redirect a request to HTTPS and strips the www. subdomain
 func Redirect(w http.ResponseWriter, req *http.Request) {
-
 	target := "https://" + strings.TrimPrefix(req.Host, "www.") + req.URL.Path
 	if len(req.URL.RawQuery) > 0 {
 		target += "?" + req.URL.RawQuery
@@ -137,9 +130,9 @@ func Redirect(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, target, http.StatusTemporaryRedirect)
 }
 
-////////////////////
+// //////////////////
 // Private
-///////////////////
+// /////////////////
 
 // ensures the cacheDir exists, fatals on error
 func ensureCacheDirExists(cacheDir string) {

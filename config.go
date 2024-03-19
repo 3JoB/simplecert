@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
@@ -69,7 +66,6 @@ var Default = &Config{
 
 // Config allows configuration of simplecert
 type Config struct {
-
 	// renew the certificate X hours before it expires
 	// LetsEncrypt Certs are valid for 90 Days
 	RenewBefore int
@@ -87,7 +83,8 @@ type Config struct {
 	// CAUTION: challenge must be received on port 80 and 443
 	// if you choose different ports here you must redirect the traffic
 	HTTPAddress string
-	TLSAddress  string
+
+	TLSAddress string
 
 	// UNIX Permission for the CacheDir and all files inside
 	CacheDirPerm os.FileMode
@@ -115,14 +112,14 @@ type Config struct {
 	KeyType string
 
 	// Handler funcs for graceful service shutdown and restoring
-	WillRenewCertificate     func()
+	WillRenewCertificate func()
+
 	DidRenewCertificate      func()
 	FailedToRenewCertificate func(error)
 }
 
 // CheckConfig checks if config can be used to obtain a cert
 func CheckConfig(c *Config) error {
-
 	if c.CacheDir == "" {
 		return errNoCacheDir
 	}

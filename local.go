@@ -1,17 +1,13 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
 	"crypto/x509"
 	"encoding/pem"
-	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -23,7 +19,6 @@ import (
 // updateHosts is used in local mode
 // to add all host entries for the domains
 func updateHosts() {
-
 	// get hostfile handle
 	hosts, err := hostsfile.NewHosts()
 	if err != nil {
@@ -46,7 +41,6 @@ func updateHosts() {
 // createLocalCert first creates a local root CA for mkcert
 // and then generates a trusted certificate for the domains specified in the configuration
 func createLocalCert(certFilePath, keyFilePath string) {
-
 	log.Println("[INFO] no cached cert found. Creating a new one for local development...")
 	log.Println("[INFO] please note that for this cert to be trusted by firefox or nodejs additional steps are necessary!")
 	log.Println("[INFO] see instructions at https://github.com/FiloSottile/mkcert")
@@ -96,9 +90,8 @@ func createLocalCert(certFilePath, keyFilePath string) {
 // if they dont match the domains from the configuration
 // this function returns true
 func domainsChanged(certFilePath, keyFilePath string) bool {
-
 	// read certificate data from disk
-	certData, err := ioutil.ReadFile(certFilePath)
+	certData, err := os.ReadFile(certFilePath)
 	if err != nil {
 		log.Fatal("[FATAL] simplecert could not load X509 key pair: ", err)
 	}

@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package main
 
 import (
@@ -16,8 +13,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/foomo/simplecert"
 	"github.com/foomo/tlsconfig"
+
+	"github.com/3JoB/simplecert"
 )
 
 type Handler struct{}
@@ -33,7 +31,6 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // Once the challenge has been completed the service will be restarted via the DidRenewCertificate hook.
 // Requests to port 80 will always be redirected to the TLS secured version of your site.
 func main() {
-
 	var (
 		// the structure that handles reloading the certificate
 		certReloader *simplecert.CertReloader
@@ -78,7 +75,6 @@ func main() {
 
 	// this function will be called after the certificate has been renewed, and is used to restart your service.
 	cfg.DidRenewCertificate = func() {
-
 		numRenews++
 
 		// restart server: both context and server instance need to be recreated!
@@ -120,7 +116,6 @@ func main() {
 }
 
 func serve(ctx context.Context, srv *http.Server) {
-
 	// lets go
 	go func() {
 		if err := srv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
@@ -128,9 +123,9 @@ func serve(ctx context.Context, srv *http.Server) {
 		}
 	}()
 
-	log.Printf("server started")
+	log.Print("server started")
 	<-ctx.Done()
-	log.Printf("server stopped")
+	log.Print("server stopped")
 
 	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer func() {
@@ -139,7 +134,7 @@ func serve(ctx context.Context, srv *http.Server) {
 
 	err := srv.Shutdown(ctxShutDown)
 	if err == http.ErrServerClosed {
-		log.Printf("server exited properly")
+		log.Print("server exited properly")
 	} else if err != nil {
 		log.Printf("server encountered an error on exit: %+s\n", err)
 	}

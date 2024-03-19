@@ -1,15 +1,11 @@
+// Package simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"log"
@@ -17,6 +13,7 @@ import (
 	"path/filepath"
 
 	"github.com/go-acme/lego/v4/certificate"
+	"github.com/sugawarayuuta/sonnet"
 )
 
 const (
@@ -37,7 +34,6 @@ var local bool
 // 5. Save To Disk
 // 6. Kickoff Renewal Routine
 func Init(cfg *Config, cleanup func()) (*CertReloader, error) {
-
 	// validate config
 	err := CheckConfig(cfg)
 	if err != nil {
@@ -81,7 +77,6 @@ func Init(cfg *Config, cleanup func()) (*CertReloader, error) {
 
 		// check if a local cert is already cached
 		if certCached(c.CacheDir) {
-
 			// cert cached! Did the domains change?
 			// If the domains have been modified we need to generate a new certificate
 			if domainsChanged(certFilePath, keyFilePath) {
@@ -89,7 +84,6 @@ func Init(cfg *Config, cleanup func()) (*CertReloader, error) {
 				createLocalCert(certFilePath, keyFilePath)
 			}
 		} else {
-
 			// nothing there yet. create a new one
 			createLocalCert(certFilePath, keyFilePath)
 		}
@@ -111,7 +105,6 @@ func Init(cfg *Config, cleanup func()) (*CertReloader, error) {
 
 	// do we have a certificate in cacheDir?
 	if certCached(c.CacheDir) {
-
 		/*
 		 *	Cert Found. Load it
 		 */
@@ -154,10 +147,8 @@ obtainNewCert:
 	// The domains must resolve to this machine or you have to use the DNS challenge.
 	cert, err := client.Certificate.Obtain(request)
 	if err != nil {
-
 		// check if we tried to obtain a new cert because the domains changed compared to a cached cert
 		if certDomainsChanged {
-
 			// if yes, log an error that this obtaining the cert failed
 			log.Println("[ERROR] simplecert: failed to obtain new cert for changed domains: ", c.Domains, " error: ", err)
 
@@ -200,7 +191,7 @@ func loadStoredCert(
 
 	// unmarshal certificate resource
 	var cr CR
-	err = json.Unmarshal(b, &cr)
+	err = sonnet.Unmarshal(b, &cr)
 	if err != nil {
 		return nil, errors.New("simplecert: failed to unmarshal certificate resource: " + err.Error())
 	}
@@ -216,10 +207,8 @@ func loadStoredCert(
 	// renew cert if necessary
 	errRenew := renew(cert)
 	if errRenew != nil {
-
 		// call handler if set
 		if c.FailedToRenewCertificate != nil {
-
 			// invoke the user's handler
 			c.FailedToRenewCertificate(errRenew)
 

@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
@@ -33,7 +30,6 @@ type CertReloader struct {
 // NewCertReloader returns a new CertReloader instance
 // the optional cleanup func will be called when a syscall.SIGINT, syscall.SIGABRT is received
 func NewCertReloader(certPath, keyPath string, logFile *os.File, cleanup func()) (*CertReloader, error) {
-
 	// init reloader
 	reloader := &CertReloader{
 		certPath: certPath,
@@ -65,7 +61,6 @@ func NewCertReloader(certPath, keyPath string, logFile *os.File, cleanup func())
 
 				// run custom cleanup func if available
 				if cleanup != nil {
-
 					// execute the cleanup function supplied by the user
 					// if you want to keep the program running at this point, supply a cleanup function that does nothing.
 					cleanup()
@@ -107,7 +102,6 @@ func (reloader *CertReloader) ReloadNow() {
 
 func (reloader *CertReloader) reload() {
 	if err := reloader.maybeReload(); err != nil {
-
 		// there was an error reloading the certificate
 		// rollback files from backup dir
 		log.Printf("[INFO] simplecert: Keeping old TLS certificate because the new one could not be loaded: %v", err)

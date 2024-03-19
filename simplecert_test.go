@@ -1,11 +1,8 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
@@ -23,15 +20,14 @@ import (
 var stopAfterNumRenews = 4
 
 // testing with pebble ACME server:
-// 1) go get github.com/letsencrypt/pebble and move into pebble project directory
-// 2) add cert to trust store
-//    $ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain test/certs/pebble.minica.pem
-// 3) start pebble ACME testing service, disable nonce rejection and challenge verification, as well as authz reuse:
-//    $ PEBBLE_AUTHZREUSE=0 PEBBLE_WFE_NONCEREJECT=0 PEBBLE_VA_ALWAYS_VALID=1 pebble -config ./test/config/pebble-config.json
-// 4) point test domain to localhost in /etc/hosts
-//    127.0.0.1	 mytestdomain.com
+//  1. go get github.com/letsencrypt/pebble and move into pebble project directory
+//  2. add cert to trust store
+//     $ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain test/certs/pebble.minica.pem
+//  3. start pebble ACME testing service, disable nonce rejection and challenge verification, as well as authz reuse:
+//     $ PEBBLE_AUTHZREUSE=0 PEBBLE_WFE_NONCEREJECT=0 PEBBLE_VA_ALWAYS_VALID=1 pebble -config ./test/config/pebble-config.json
+//  4. point test domain to localhost in /etc/hosts
+//     127.0.0.1	 mytestdomain.com
 func TestRenewal(t *testing.T) {
-
 	// pebble wont store any information on the file system
 	// so we need to reset all state before contacting it initially
 	// or we will be greeted with an error stating that the account https://0.0.0.0:14000/my-account/1 was not found
@@ -77,7 +73,6 @@ func TestRenewal(t *testing.T) {
 	}
 
 	cfg.DidRenewCertificate = func() {
-
 		numRenews++
 		if numRenews == stopAfterNumRenews {
 			os.Exit(0)
@@ -122,7 +117,6 @@ func TestRenewal(t *testing.T) {
 }
 
 func serve(ctx context.Context, srv *http.Server) {
-
 	// lets go
 	go func() {
 		if err := srv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
@@ -130,9 +124,9 @@ func serve(ctx context.Context, srv *http.Server) {
 		}
 	}()
 
-	log.Printf("server started")
+	log.Print("server started")
 	<-ctx.Done()
-	log.Printf("server stopped")
+	log.Print("server stopped")
 
 	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer func() {
@@ -141,7 +135,7 @@ func serve(ctx context.Context, srv *http.Server) {
 
 	err := srv.Shutdown(ctxShutDown)
 	if err == http.ErrServerClosed {
-		log.Printf("server exited properly")
+		log.Print("server exited properly")
 	} else if err != nil {
 		log.Printf("server encountered an error on exit: %+s\n", err)
 	}

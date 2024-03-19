@@ -1,23 +1,20 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strings"
 
-	"github.com/go-acme/lego/v4/challenge/dns01"
-	"github.com/go-acme/lego/v4/challenge/tlsalpn01"
-
 	"github.com/go-acme/lego/v4/certcrypto"
+	"github.com/go-acme/lego/v4/challenge/dns01"
 	"github.com/go-acme/lego/v4/challenge/http01"
+	"github.com/go-acme/lego/v4/challenge/tlsalpn01"
 	"github.com/go-acme/lego/v4/lego"
 	"github.com/go-acme/lego/v4/providers/dns"
 	"github.com/go-acme/lego/v4/registration"
@@ -28,7 +25,6 @@ import (
  */
 
 func createClient(u SSLUser, dnsServers []string) (lego.Client, error) {
-
 	// create lego config
 	config := lego.NewConfig(&u)
 	config.CADirURL = c.DirectoryURL
@@ -95,12 +91,11 @@ func createClient(u SSLUser, dnsServers []string) (lego.Client, error) {
 	}
 
 	if c.DNSProvider == "" && c.TLSAddress == "" && c.HTTPAddress == "" {
-		return *client, fmt.Errorf("simplecert: you must specify at least one of the challenge types: dns, http or tls")
+		return *client, errors.New("simplecert: you must specify at least one of the challenge types: dns, http or tls")
 	}
 
 	// register if necessary
 	if u.Registration == nil {
-
 		// Register Client and agree to TOS
 		reg, err := client.Registration.Register(registration.RegisterOptions{TermsOfServiceAgreed: true})
 		if err != nil {

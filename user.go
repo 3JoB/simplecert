@@ -1,24 +1,21 @@
+// simplecert
 //
-//  simplecert
-//
-//  Created by Philipp Mieden
-//  Contact: dreadl0ck@protonmail.ch
-//  Copyright © 2018 bestbytes. All rights reserved.
-//
-
+// Created by Philipp Mieden
+// Contact: dreadl0ck@protonmail.ch
+// Copyright © 2018 bestbytes. All rights reserved.
 package simplecert
 
 import (
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/go-acme/lego/v4/registration"
+	"github.com/sugawarayuuta/sonnet"
 )
 
 const sslUserFileName = "SSLUser.json"
@@ -51,15 +48,14 @@ func (u SSLUser) GetPrivateKey() crypto.PrivateKey {
 
 // get SSL User from cacheDir or create a new one
 func getUser() (SSLUser, error) {
-
 	// no cached cert. start from scratch
 	var u SSLUser
 
 	// do we have a user?
-	b, err := ioutil.ReadFile(filepath.Join(c.CacheDir, sslUserFileName))
+	b, err := os.ReadFile(filepath.Join(c.CacheDir, sslUserFileName))
 	if err == nil {
 		// user exists. load
-		err = json.Unmarshal(b, &u)
+		err = sonnet.Unmarshal(b, &u)
 		if err != nil {
 			return u, fmt.Errorf("simplecert: failed to unmarshal SSLUser: %s", err)
 		}
@@ -83,11 +79,11 @@ func getUser() (SSLUser, error) {
 // save the user on disk
 // fatals on error
 func saveUserToDisk(u SSLUser, cacheDir string) {
-	b, err := json.MarshalIndent(u, "", "  ")
+	b, err := sonnet.MarshalIndent(u, "", "  ")
 	if err != nil {
 		log.Fatal("[FATAL] simplecert: failed to marshal user: ", err)
 	}
-	err = ioutil.WriteFile(filepath.Join(c.CacheDir, sslUserFileName), b, c.CacheDirPerm)
+	err = os.WriteFile(filepath.Join(c.CacheDir, sslUserFileName), b, c.CacheDirPerm)
 	if err != nil {
 		log.Fatal("[FATAL] simplecert: failed to write user to disk: ", err)
 	}

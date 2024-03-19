@@ -3,7 +3,7 @@ package simplecert
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -20,10 +20,8 @@ type CertStatus struct {
 // the actual error message will never be passed to the caller and only appear in the simplecert logs
 // therefore always check if you received a result != nil when calling Status()
 func Status() *CertStatus {
-
 	var certData []byte
 	if !local {
-
 		// prevent a nil pointer exception if the status API is called
 		// but the config hasn't been initialized yet
 		if c == nil {
@@ -31,7 +29,7 @@ func Status() *CertStatus {
 		}
 
 		// read cert resource from disk
-		b, err := ioutil.ReadFile(filepath.Join(c.CacheDir, certResourceFileName))
+		b, err := os.ReadFile(filepath.Join(c.CacheDir, certResourceFileName))
 		if err != nil {
 			fmt.Println("[Status] simplecert: failed to read CertResource.json from disk: ", err)
 			return nil
@@ -50,7 +48,7 @@ func Status() *CertStatus {
 	} else {
 		// read local cert data from disk
 		var err error
-		certData, err = ioutil.ReadFile(filepath.Join(c.CacheDir, "cert.pem"))
+		certData, err = os.ReadFile(filepath.Join(c.CacheDir, "cert.pem"))
 		if err != nil {
 			fmt.Println("[Status] simplecert: failed to read cert.pem from disk: ", err)
 			return nil
